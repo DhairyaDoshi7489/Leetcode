@@ -14,23 +14,17 @@ public:
             }
         }
 
-        int l = 1, r = min(m, n), ans = 0;
-        while (l <= r) {
-            int mid = (l + r) / 2;
-            bool find = false;
-            for (int i = 1; i <= m - mid + 1; ++i) {
-                for (int j = 1; j <= n - mid + 1; ++j) {
-                    if (getRect(P, i, j, i + mid - 1, j + mid - 1) <=
-                        threshold) {
-                        find = true;
+        int r = min(m, n), ans = 0;
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                for (int c = ans + 1; c <= r; ++c) {
+                    if (i + c - 1 <= m && j + c - 1 <= n &&
+                        getRect(P, i, j, i + c - 1, j + c - 1) <= threshold) {
+                        ++ans;
+                    } else {
+                        break;
                     }
                 }
-            }
-            if (find) {
-                ans = mid;
-                l = mid + 1;
-            } else {
-                r = mid - 1;
             }
         }
         return ans;
