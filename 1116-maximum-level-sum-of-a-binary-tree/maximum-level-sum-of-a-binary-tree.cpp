@@ -12,25 +12,33 @@
 class Solution {
 public:
     int maxLevelSum(TreeNode* root) {
-        vector<int> sm;
-        queue<pair<int,TreeNode*>> q;
-        q.push({1,root});
-        while(q.size()){
-            auto node = q.front();
-            q.pop();
-            if(node.first-1==sm.size())sm.push_back(0);
-            sm[node.first-1]+=node.second->val;
-            if(node.second->left)q.push({
-                node.first+1,node.second->left});
-            if(node.second->right)q.push({
-                node.first+1, node.second->right
-            });
+        queue<TreeNode*> q;
+        q.push(root);
+        unordered_map<int,int> mp;
+        int sum = 0;
+        int maxsum = 0;
+        int level = 1;
+        maxsum = root->val;
+        sum = maxsum;
+        mp[level] = maxsum;
+        while(!q.empty()){
+            // auto t = q.front();
+            int size = q.size();
+            sum = -1000000000;
+            level++;
+            for(int i = 0;i < size;i++){
+                auto t = q.front();q.pop();
+                if(t->left) {if(sum == -1000000000){sum = 0;}sum+=t->left->val;q.push(t->left);}
+                if(t->right) {if(sum == -1000000000){sum = 0;}sum+=t->right->val;q.push(t->right);}
+                // if(!t->right && !t->left && i==size-1) {mp[sum] = level;sum = 10000000;}
+
+            }
+            if(mp[sum]) {bool u = true;}
+            else{
+                maxsum=max(maxsum,sum);
+                mp[sum] = level;
+            }
         }
-        long long mx = -1e18;
-        int ans = -1;
-        for(int i=0;i<sm.size();i++){
-            if(sm[i]>mx)ans = i+1,mx = sm[i];
-        }
-        return ans;
+        return mp[maxsum];
     }
 };
