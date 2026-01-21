@@ -12,23 +12,24 @@
 class Solution {
 public:
     int maxLevelSum(TreeNode* root) {
-        // set<pair<int,int>> st;
-        map<int,long long> sm;
+        vector<int> sm;
         queue<pair<int,TreeNode*>> q;
         q.push({1,root});
         while(q.size()){
             auto node = q.front();
             q.pop();
-            sm[node.first]+=node.second->val;
-            if(node.second->left)q.push({node.first+1,node.second->left});
+            if(node.first-1==sm.size())sm.push_back(0);
+            sm[node.first-1]+=node.second->val;
+            if(node.second->left)q.push({
+                node.first+1,node.second->left});
             if(node.second->right)q.push({
                 node.first+1, node.second->right
             });
         }
         long long mx = -1e18;
         int ans = -1;
-        for(auto &x: sm){
-            if(x.second>mx)ans = x.first, mx = x.second; 
+        for(int i=0;i<sm.size();i++){
+            if(sm[i]>mx)ans = i+1,mx = sm[i];
         }
         return ans;
     }
