@@ -12,8 +12,8 @@
 class Solution {
 public:
     int maxLevelSum(TreeNode* root) {
-        set<pair<int,int>> st;
-        unordered_map<int,long long> sm;
+        // set<pair<int,int>> st;
+        map<int,long long> sm;
         queue<pair<int,TreeNode*>> q;
         q.push({1,root});
         while(q.size()){
@@ -25,9 +25,11 @@ public:
                 node.first+1, node.second->right
             });
         }
+        long long mx = -1e18;
+        int ans = -1;
         for(auto &x: sm){
-            st.insert({-x.second,x.first});
+            if(x.second>mx)ans = x.first, mx = x.second; 
         }
-        return (*st.begin()).second;
+        return ans;
     }
 };
