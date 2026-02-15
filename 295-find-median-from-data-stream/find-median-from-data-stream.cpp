@@ -1,30 +1,35 @@
 class MedianFinder {
 public:
-    priority_queue<int> maxHeap;
-    priority_queue<int, vector<int> , greater<int> > minHeap;
-    
-    MedianFinder() {}
+    multiset<int> l, r;
+    MedianFinder() {
+        
+    }
     
     void addNum(int num) {
-        maxHeap.push(num);
-        if(!maxHeap.empty() && !minHeap.empty() && maxHeap.top()>minHeap.top()){
-            minHeap.push(maxHeap.top());
-            maxHeap.pop();
-        }
-
-        if(maxHeap.size()> minHeap.size()+1){
-            minHeap.push(maxHeap.top());
-            maxHeap.pop();
-        }
-        if(minHeap.size() > maxHeap.size()+1){
-            maxHeap.push(minHeap.top());
-            minHeap.pop();
+        if(!l.size())l.insert(num);
+        else{
+            if(num>=(*--l.end()))r.insert(num);
+            else l.insert(num);
+            if(abs(int(l.size()-r.size()))>1){
+                if(l.size()>r.size())r.insert(*--l.end()), l.erase(--l.end());
+                else l.insert(*r.begin()), r.erase(r.begin());
+            }
         }
     }
     
     double findMedian() {
-        if(maxHeap.size()> minHeap.size())  return maxHeap.top();
-        if(maxHeap.size()< minHeap.size())  return minHeap.top();
-        return (maxHeap.top()+minHeap.top())/2.0;
+        int val = l.size()+r.size();
+        if(val&1){
+            if(l.size()>r.size())return *--l.end();
+            else return *r.begin();
+        }
+        else return (*--l.end()+*r.begin())/2.0;
     }
 };
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
