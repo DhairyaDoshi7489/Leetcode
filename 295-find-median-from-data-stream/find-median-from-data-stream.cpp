@@ -1,9 +1,7 @@
 class MedianFinder {
 public:
     multiset<int> l, r;
-    MedianFinder() {
-        
-    }
+    MedianFinder(){}
     
     void addNum(int num) {
         if(!l.size())l.insert(num);
