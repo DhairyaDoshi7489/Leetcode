@@ -1,6 +1,6 @@
 class Trie {
 public:
-    set<string> cmp, pref; 
+    unordered_set<string> cmp, pref; 
     Trie() {
         
     }
