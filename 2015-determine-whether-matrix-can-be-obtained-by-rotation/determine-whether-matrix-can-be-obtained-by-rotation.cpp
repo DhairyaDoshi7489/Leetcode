@@ -24,11 +24,11 @@ public:
         }
     }
     bool chk(vector<vector<int>> &a, vector<vector<int>> &b){
-        for(int i=0;i<a.size();i++){
-            for(int j=0;j<b.size();j++){
-                if(a[i][j]!=b[i][j])return false;
-            }
-        }
-        return true;
+        // for(int i=0;i<a.size();i++){
+        //     for(int j=0;j<b.size();j++){
+        //         if(a[i][j]!=b[i][j])return false;
+        //     }
+        // }
+        return a==b;
     }
 };
