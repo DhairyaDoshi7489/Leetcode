@@ -1,47 +1,52 @@
 class Solution {
 public:
-    vector<int> survivedRobotsHealths(vector<int>& p, vector<int>& h, string d) {
-        vector<vector<int>> v;
-        int n = h.size();
-        map<int,int> mp;
-        for(int i=0;i<n;i++){
-            v.push_back({p[i],h[i],(d[i]=='R'?1:-1)});
-            mp[p[i]]=i;
+    vector<int> survivedRobotsHealths(vector<int>& positions,
+                                      vector<int>& healths, string directions) {
+        int n = positions.size();
+        vector<int> indices(n), result;
+        stack<int> stack;
+
+        for (int index = 0; index < n; ++index) {
+            indices[index] = index;
         }
-        sort(v.begin(),v.end());
-        stack<vector<int>> stk;
-        for(auto &x: v){
-            int hi = x[1], dr = x[2];
-            bool val = false;
-            while(stk.size()&&stk.top()[2]>dr){
-                if(val)break;
-                if(stk.top()[1]<hi){
-                    hi--;
-                    stk.pop();
-                }
-                else if(stk.top()[1]==hi){
-                    stk.pop();
-                    val = true;
-                }
-                else{
-                    vector<int> vt = stk.top();
-                    stk.pop();
-                    stk.push({vt[0],vt[1]-1,vt[2]});
-                    val = true;
+
+        sort(indices.begin(), indices.end(),
+             [&](int lhs, int rhs) { return positions[lhs] < positions[rhs]; });
+
+        for (int currentIndex : indices) {
+            // Add right-moving robots to the stack
+            if (directions[currentIndex] == 'R') {
+                stack.push(currentIndex);
+            } else {
+                while (!stack.empty() && healths[currentIndex] > 0) {
+                    // Pop the top robot from the stack for collision check
+                    int topIndex = stack.top();
+                    stack.pop();
+
+                    // Top robot survives, current robot is destroyed
+                    if (healths[topIndex] > healths[currentIndex]) {
+                        healths[topIndex] -= 1;
+                        healths[currentIndex] = 0;
+                        stack.push(topIndex);
+                    } else if (healths[topIndex] < healths[currentIndex]) {
+                        // Current robot survives, top robot is destroyed
+                        healths[currentIndex] -= 1;
+                        healths[topIndex] = 0;
+                    } else {
+                        // Both robots are destroyed
+                        healths[currentIndex] = 0;
+                        healths[topIndex] = 0;
+                    }
                 }
             }
-            if(!val)stk.push({x[0],hi,dr});
         }
-        vector<int> ans(n);
-        while(stk.size()){
-            int i = stk.top()[0];
-            ans[mp[i]]=stk.top()[1];
-            stk.pop();
+
+        // Collect surviving robots
+        for (int index = 0; index < n; ++index) {
+            if (healths[index] > 0) {
+                result.push_back(healths[index]);
+            }
         }
-        vector<int> pt;
-        for(auto &x: ans){
-            if(x)pt.push_back(x);
-        }
-        return pt;
+        return result;
     }
 };
